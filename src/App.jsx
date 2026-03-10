@@ -663,15 +663,16 @@ export default function App() {
   const today = todayKey();
   const todayData = days[today] ?? { cals: 0, protein: 0, entries: [] };
 
-  const [weightLog, setWeightLog] = useState(() => LS.getObj("wlog") || [
-    { date: "2025-03-03", w: 75.3 },
-    { date: "2025-03-04", w: 74.8 },
-    { date: "2025-03-05", w: 74.5 },
-    { date: "2025-03-06", w: 74.3 },
-    { date: "2025-03-07", w: 74.1 },
-    { date: "2025-03-08", w: 73.9 },
-    { date: "2025-03-09", w: 74.0 },
-  ]);
+  const [weightLog, setWeightLog] = useState(() => {
+    const saved = LS.getObj("wlog");
+    if (saved) return saved;
+    // Auto-seed today's entry from profile currentWeight if available
+    const p = LS.getObj("profile") || DEFAULT_PROFILE;
+    if (p.currentWeight) {
+      return [{ date: todayKey(), w: parseFloat(p.currentWeight) }];
+    }
+    return [];
+  });
   const [weightInput, setWeightInput] = useState("");
 
   const [messages, setMessages] = useState([
@@ -1594,23 +1595,36 @@ export default function App() {
                 Weight Log
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {[...weightLog].reverse().map((e, i) => (
-                  <div
-                    key={i}
-                    style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
-                  >
-                    <span style={{ fontSize: 12, color: MUTED }}>{e.date}</span>
+                {weightLog.length === 0 ? (
+                  <div style={{ fontSize: 13, color: MUTED, textAlign: "center", padding: "12px 0" }}>
+                    No entries yet. Update your details in the{" "}
                     <span
-                      style={{
-                        fontSize: 14,
-                        fontWeight: 500,
-                        fontFamily: "'DM Mono',monospace",
-                      }}
+                      onClick={() => setTab("profile")}
+                      style={{ color: PROT, cursor: "pointer", textDecoration: "underline" }}
                     >
-                      {e.w} kg
-                    </span>
+                      Profile
+                    </span>{" "}
+                    tab to get started.
                   </div>
-                ))}
+                ) : (
+                  [...weightLog].reverse().map((e, i) => (
+                    <div
+                      key={i}
+                      style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                    >
+                      <span style={{ fontSize: 12, color: MUTED }}>{e.date}</span>
+                      <span
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 500,
+                          fontFamily: "'DM Mono',monospace",
+                        }}
+                      >
+                        {e.w} kg
+                      </span>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>

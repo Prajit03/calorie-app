@@ -1,6 +1,6 @@
 {
-    "name": "Macro App",
-    "short_name": "Macro",
+    "name": "Calorie",
+    "short_name": "calorie",
     "start_url": "/",
     "scope": "/",
     "display": "standalone",

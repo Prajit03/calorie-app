@@ -52,10 +52,7 @@ async function askGPT({ apiKey, systemPrompt, userText, imageBase64 }) {
   const data = await res.json();
 
   if (!res.ok) {
-    const msg =
-      data?.error?.message ||
-      data?.message ||
-      "Gemini request failed.";
+    const msg = data?.error?.message || data?.message || "Gemini request failed.";
     throw new Error(msg);
   }
 
@@ -480,18 +477,23 @@ function KeySetupScreen({ onSave }) {
         background: BG,
         color: TEXT,
         fontFamily: "'DM Sans',sans-serif",
-        height: "100vh",
+        width: "100vw",
+        height: "100dvh",
+        minHeight: "100dvh",
         display: "flex",
         flexDirection: "column",
-        maxWidth: 420,
-        margin: "0 auto",
-        padding: "0 24px",
         justifyContent: "center",
+        overflow: "hidden",
+        paddingTop: "env(safe-area-inset-top, 0px)",
+        paddingLeft: "max(24px, env(safe-area-inset-left, 0px))",
+        paddingRight: "max(24px, env(safe-area-inset-right, 0px))",
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
-        *{box-sizing:border-box;margin:0;padding:0;}
+        *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+        body{background:#0d0d0f;}
         input::placeholder{color:#4a4652;}
         @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
         .fade{animation:fadeUp 0.4s ease both;}
@@ -624,8 +626,8 @@ function KeySetupScreen({ onSave }) {
           style={{ color: PROT, textDecoration: "none" }}
         >
           Get one in Google AI Studio
-        </a>
-        {" "}and paste it here.
+        </a>{" "}
+        and paste it here.
       </div>
     </div>
   );
@@ -633,7 +635,6 @@ function KeySetupScreen({ onSave }) {
 
 // ── Main App ──────────────────────────────────────────────────────────────────
 export default function App() {
-  // ── Key state ───────────────────────────────────────────────────────────────
   const [apiKey, setApiKey] = useState(() => LS.get("gemini_key") || "");
 
   function saveKey(k) {
@@ -646,7 +647,6 @@ export default function App() {
     setApiKey("");
   }
 
-  // ── App state ───────────────────────────────────────────────────────────────
   const [tab, setTab] = useState("log");
   const [profile, setProfile] = useState(() => {
     const saved = LS.getObj("profile") || DEFAULT_PROFILE;
@@ -890,18 +890,23 @@ export default function App() {
         background: BG,
         color: TEXT,
         fontFamily: "'DM Sans',sans-serif",
-        height: "100vh",
+        width: "100vw",
+        height: "100dvh",
+        minHeight: "100dvh",
         display: "flex",
         flexDirection: "column",
-        maxWidth: 420,
-        margin: "0 auto",
         overflow: "hidden",
+        paddingTop: "env(safe-area-inset-top, 0px)",
+        paddingLeft: "env(safe-area-inset-left, 0px)",
+        paddingRight: "env(safe-area-inset-right, 0px)",
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
-        *{box-sizing:border-box;margin:0;padding:0;}
-        ::-webkit-scrollbar{width:0;}
+        *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+        body{background:#0d0d0f;}
+        ::-webkit-scrollbar{width:0;height:0;}
         input::placeholder{color:#4a4652;}
         @keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
         @keyframes blink{0%,100%{opacity:0.25;}50%{opacity:1;}}
@@ -1113,6 +1118,8 @@ export default function App() {
                 display: "flex",
                 flexDirection: "column",
                 gap: 10,
+                WebkitOverflowScrolling: "touch",
+                overscrollBehavior: "contain",
               }}
             >
               {messages.map((m, i) => (
@@ -1165,9 +1172,7 @@ export default function App() {
                       borderRadius:
                         m.role === "user" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
                       background: m.role === "user" ? "#1f1b2e" : SURF,
-                      border: `1px solid ${
-                        m.role === "user" ? "rgba(100,80,160,0.22)" : BORDER
-                      }`,
+                      border: `1px solid ${m.role === "user" ? "rgba(100,80,160,0.22)" : BORDER}`,
                     }}
                   >
                     {m.text}
@@ -1259,6 +1264,7 @@ export default function App() {
                 display: "flex",
                 gap: 8,
                 alignItems: "center",
+                background: BG,
               }}
             >
               <button
@@ -1341,10 +1347,12 @@ export default function App() {
             style={{
               flex: 1,
               overflowY: "auto",
-              padding: 18,
+              padding: "18px 18px 0",
               display: "flex",
               flexDirection: "column",
               gap: 14,
+              WebkitOverflowScrolling: "touch",
+              overscrollBehavior: "contain",
             }}
           >
             <div
@@ -1571,6 +1579,7 @@ export default function App() {
                 borderRadius: 14,
                 padding: 16,
                 border: `1px solid ${BORDER}`,
+                marginBottom: 18,
               }}
             >
               <div
@@ -1612,10 +1621,12 @@ export default function App() {
             style={{
               flex: 1,
               overflowY: "auto",
-              padding: 18,
+              padding: "18px 18px 0",
               display: "flex",
               flexDirection: "column",
               gap: 12,
+              WebkitOverflowScrolling: "touch",
+              overscrollBehavior: "contain",
             }}
           >
             <div
@@ -1711,6 +1722,7 @@ export default function App() {
                 background: SURF,
                 borderRadius: 12,
                 border: `1px solid ${BORDER}`,
+                marginBottom: 18,
               }}
             >
               <div
